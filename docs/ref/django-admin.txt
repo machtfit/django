@@ -668,6 +668,13 @@ The ``--merge`` option enables fixing of migration conflicts. The
 :djadminopt:`--noinput` option may be provided to suppress user prompts during
 a merge.
 
+.. django-admin-option:: --name, -n
+
+.. versionadded:: 1.8
+
+The ``--name`` option allows you to give the migration(s) a custom name instead
+of a generated one.
+
 migrate [<app_label> [<migrationname>]]
 ---------------------------------------
 
