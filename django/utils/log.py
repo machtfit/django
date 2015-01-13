@@ -74,7 +74,7 @@ def configure_logging(logging_config, logging_settings):
         logging.captureWarnings(True)
         # RemovedInNextVersionWarning is a subclass of DeprecationWarning which
         # is hidden by default, hence we force the "default" behavior
-        warnings.simplefilter("default", RemovedInNextVersionWarning)
+        warnings.simplefilter("ignore", RemovedInNextVersionWarning)
 
     if logging_config:
         # First find the logging configuration function ...
