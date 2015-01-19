@@ -162,34 +162,26 @@ class PostGISOperations(DatabaseOperations, BaseSpatialOperations):
         # Adding the distance functions to the geometries lookup.
         self.geometry_functions.update(self.distance_functions)
 
-        # Only PostGIS versions 1.3.4+ have GeoJSON serialization support.
-        if self.spatial_version < (1, 3, 4):
-            GEOJSON = False
-        else:
-            GEOJSON = prefix + 'AsGeoJson'
+        GEOJSON = prefix + 'AsGeoJson'
 
         # ST_ContainsProperly ST_MakeLine, and ST_GeoHash added in 1.4.
-        if self.spatial_version >= (1, 4, 0):
-            GEOHASH = 'ST_GeoHash'
-            BOUNDINGCIRCLE = 'ST_MinimumBoundingCircle'
-            self.geometry_functions['contains_properly'] = PostGISFunction(prefix, 'ContainsProperly')
-        else:
-            GEOHASH, BOUNDINGCIRCLE = False, False
+        GEOHASH = 'ST_GeoHash'
+        BOUNDINGCIRCLE = 'ST_MinimumBoundingCircle'
+        self.geometry_functions['contains_properly'] = PostGISFunction(prefix, 'ContainsProperly')
 
         # Geography type support added in 1.5.
-        if self.spatial_version >= (1, 5, 0):
-            self.geography = True
-            # Only a subset of the operators and functions are available
-            # for the geography type.
-            self.geography_functions = self.distance_functions.copy()
-            self.geography_functions.update({
-                'coveredby': self.geometry_functions['coveredby'],
-                'covers': self.geometry_functions['covers'],
-                'intersects': self.geometry_functions['intersects'],
-            })
-            self.geography_operators = {
-                'bboverlaps': PostGISOperator('&&'),
-            }
+        self.geography = True
+        # Only a subset of the operators and functions are available
+        # for the geography type.
+        self.geography_functions = self.distance_functions.copy()
+        self.geography_functions.update({
+            'coveredby': self.geometry_functions['coveredby'],
+            'covers': self.geometry_functions['covers'],
+            'intersects': self.geometry_functions['intersects'],
+        })
+        self.geography_operators = {
+            'bboverlaps': PostGISOperator('&&'),
+        }
 
         # Creating a dictionary lookup of all GIS terms for PostGIS.
         self.gis_terms = set(['isnull'])
