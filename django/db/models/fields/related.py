@@ -1527,7 +1527,12 @@ class ForeignObject(RelatedField):
         root_constraint = constraint_class()
         assert len(targets) == len(sources)
         if len(lookups) > 1:
-            raise exceptions.FieldError('Relation fields do not support nested lookups')
+            raise exceptions.FieldError(
+                "Cannot resolve keyword %r into field. Choices are: %s" % (
+                    lookups[0],
+                    ", ".join(f.name for f in self.model._meta.fields),
+                )
+            )
         lookup_type = lookups[0]
 
         def get_normalized_value(value):
